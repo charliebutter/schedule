@@ -1,0 +1,150 @@
+@font-face {
+  font-family: "Kayak";
+  src:
+    url("Kayak/Kayak Sans Regular.otf")
+}
+@font-face {
+  font-family: "KayakBold";
+  src:
+    url("Kayak/Kayak Sans Bold.otf")
+}
+@font-face {
+  font-family: "KayakLight";
+  src:
+    url("Kayak/Kayak Sans Light.otf")
+}
+
+
+/* Resetting default margin and padding */
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+/* Ensuring full-page height */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #1B4242; /* Change as needed */
+    font-family: "KayakBold";
+}
+
+/* Styling for the header */
+header {
+    background-color: #092635; /* Change as needed */
+    color: #9EC8B9; /* Change as needed */
+    padding-left: 60px;
+    box-sizing: border-box;
+    width: 100%;
+    text-align: left;
+    font-size: 120%;
+}
+
+/* Styling for the box container */
+.box-container {
+    display: flex;
+    justify-content: center;
+    padding-top: 80px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+/* Styling for individual boxes */
+.day-box {
+    flex: 1;
+    min-width: 200px;
+    max-width: 12%;
+    height: 800px; /* Adjust height as needed */
+    background-color: #5C8374; /* Change background color as needed */
+    border-radius: 15px; /* Adjust border-radius for rounded corners */
+    margin: 10px; /* Adjust margin between boxes as needed */
+    flex-direction: column;
+    overflow: hidden;
+    text-align: center;
+    display: flex;
+}
+
+.label {
+    background-color: #092635;
+    color: #9EC8B9;
+    width: 100%;
+    padding: 14px 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.shifts {
+    overflow-y: auto;
+    width: 100%;
+}
+
+.shift {
+    min-height: 80px;
+    background-color: #9EC8B9;
+    margin: 6%;
+    border-radius: 15px;
+    overflow: hidden;
+    text-align: left;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    border: none;
+}
+
+.details {
+    padding: 10px 0;
+}
+
+.sub {
+    font-family: "Jost";
+    font-weight: 450;
+    margin: 3% 0;
+}
+
+.name {
+    font-family: "Jost";
+    font-weight: 650;
+    font-size: 19px;
+    margin: 3% 0;
+}
+
+.weekday {
+    margin: 3px 0 0;
+    font-size: 24px;
+}
+
+.tab {
+    position: relative;
+    background-color: #9EC8B9; 
+    width: 42px;
+    height: 36px;
+    border-radius: 6px;
+    display: grid;
+    place-items: center;
+}
+
+.hole {
+    position: absolute;
+    background-color: white;
+    width: 4px;
+    height: 5px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    top: 0;
+}
+
+.left {
+    left: 12px;
+}
+
+.right {
+    right: 12px;
+}
+
+.number {
+    font-size: 20px;
+    font-family: "Montserrat", sans-serif;
+    color: #2a394e;
+}
