@@ -1,4 +1,4 @@
-import { parse } from "./../libraries/csv/index.js";
+import { parse } from ".";
 
 function days() {
     const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
