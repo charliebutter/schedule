@@ -1,3 +1,5 @@
+import { parse } from "/libraries/csv/index.js";
+
 function days() {
     const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const nodes = document.getElementsByClassName('day-box');
