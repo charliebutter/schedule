@@ -98,14 +98,17 @@ function newShift(week, day, name, pos, time) {
 }
 
 async function loadData() {
-    import("../libraries/csv/index.js")
-    const response = await fetch("data/shifts.csv", {cache: "no-store"});
-    const data = await response.text();
-    const parsed = parse(data);
+    import("../libraries/csv/index.js").then((mod) => {
+        const response = await fetch("data/shifts.csv", {cache: "no-store"});
+        const data = await response.text();
+        const mod.parsed = parse(data);
+
+        for (var item of parsed) {
+            newShift(item[0], item[1]-1, item[2], item[3], item[4]);
+        }
+
+        });
     
-    for (var item of parsed) {
-        newShift(item[0], item[1]-1, item[2], item[3], item[4]);
-    }
 }
 
 function load() {
