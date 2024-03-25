@@ -98,6 +98,7 @@ function newShift(week, day, name, pos, time) {
 }
 
 async function loadData() {
+    import("../libraries/csv/index.js")
     const response = await fetch("data/shifts.csv", {cache: "no-store"});
     const data = await response.text();
     const parsed = parse(data);
@@ -108,7 +109,6 @@ async function loadData() {
 }
 
 function load() {
-    import("../libraries/csv/index.js")
     daybox();
     days();
     loadData();
