@@ -1,5 +1,3 @@
-import { parse } from "/libraries/csv/index.js";
-
 function days() {
     const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const nodes = document.getElementsByClassName('day-box');
@@ -109,6 +107,7 @@ async function loadData() {
 }
 
 function load() {
+    console.log("hello");
     console.log(window.location.pathname);
     daybox();
     days();
