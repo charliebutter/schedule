@@ -14,26 +14,35 @@
     url("Kayak/Kayak Sans Light.otf")
 }
 
+:root {
+  --dark: #092635;
+  --mid: #1B4242;
+  --light: #5C8374;
+  --bright: #9EC8B9;
+}
 
-/* Resetting default margin and padding */
+.locked {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
 body, html {
     margin: 0;
     padding: 0;
 }
 
-/* Ensuring full-page height */
 body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: #1B4242; /* Change as needed */
+    background-color: var(--mid);
     font-family: "KayakBold";
 }
 
-/* Styling for the header */
 header {
-    background-color: #092635; /* Change as needed */
-    color: #9EC8B9; /* Change as needed */
+    background-color: var(--dark);
+    color: var(--bright);
     padding-left: 60px;
     box-sizing: border-box;
     width: 100%;
@@ -41,24 +50,22 @@ header {
     font-size: 120%;
 }
 
-/* Styling for the box container */
 .box-container {
     display: flex;
     justify-content: center;
-    padding-top: 80px;
     width: 100%;
     flex-wrap: wrap;
+    align-items: center;
 }
 
-/* Styling for individual boxes */
 .day-box {
     flex: 1;
     min-width: 200px;
     max-width: 12%;
-    height: 800px; /* Adjust height as needed */
-    background-color: #5C8374; /* Change background color as needed */
-    border-radius: 15px; /* Adjust border-radius for rounded corners */
-    margin: 10px; /* Adjust margin between boxes as needed */
+    height: 800px;
+    background-color: var(--light);
+    border-radius: 15px;
+    margin: 10px;
     flex-direction: column;
     overflow: hidden;
     text-align: center;
@@ -66,8 +73,8 @@ header {
 }
 
 .label {
-    background-color: #092635;
-    color: #9EC8B9;
+    background-color: var(--dark);
+    color: var(--bright);
     width: 100%;
     padding: 14px 0;
     display: flex;
@@ -82,7 +89,7 @@ header {
 
 .shift {
     min-height: 80px;
-    background-color: #9EC8B9;
+    background-color: var(--bright);
     margin: 6%;
     border-radius: 15px;
     overflow: hidden;
@@ -117,7 +124,7 @@ header {
 
 .tab {
     position: relative;
-    background-color: #9EC8B9; 
+    background-color: var(--bright); 
     width: 42px;
     height: 36px;
     border-radius: 6px;
@@ -135,11 +142,11 @@ header {
     top: 0;
 }
 
-.left {
+.l {
     left: 12px;
 }
 
-.right {
+.r {
     right: 12px;
 }
 
@@ -147,4 +154,52 @@ header {
     font-size: 20px;
     font-family: "Montserrat", sans-serif;
     color: #2a394e;
+}
+
+.arrow {
+    color: var(--light);
+    margin: 0 30px;
+    transition: .22s;
+}
+
+.arrow:hover {
+    color: var(--bright);
+    cursor: pointer;
+}
+
+.big {
+    --ggs: 2.4;
+    background-color: var(--mid);
+}
+
+
+.small {
+    --ggs: 1.5;
+    background-color: var(--dark);
+}
+
+.big:hover {
+    --ggs: 2.75;
+}
+
+
+.small:hover {
+    --ggs: 1.8;
+}
+
+
+.month {
+    margin: 50px auto 30px;
+    color: var(--bright);
+    font-size: 140%;
+    text-align: center;
+    line-height: 30px;
+    background-color: var(--dark);
+    width: 30%;
+    border-radius: 18px;
+    border: 8px solid var(--light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1%;
 }

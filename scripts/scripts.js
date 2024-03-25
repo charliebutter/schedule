@@ -1,11 +1,10 @@
-import {parse} from "./../libraries/csv/index.js";
+var currentWeek = 2;
 
 function days() {
     const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const nodes = document.getElementsByClassName('day-box');
     for (var i = 0; i < nodes.length; i++) {
         const node = nodes[i];
-        node.scrollTop;
         node.getElementsByClassName("weekday").item(0).innerHTML = week[i];
         node.getElementsByClassName("number").item(0).innerHTML = (i + 1).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
     }
@@ -37,10 +36,10 @@ function color(node) {
 
 function daybox() {
     const d = document;
-    const nodes = document.getElementsByClassName('day-box');
+    const nodes = d.getElementsByClassName('day-box');
     for (var db of nodes) {
         const label = d.createElement("div");
-        label.className = "label";
+        label.className = "label locked";
 
         const weekday = d.createElement("p");
         weekday.className = "weekday";
@@ -50,22 +49,22 @@ function daybox() {
         const tab = d.createElement("div");
         tab.className = "tab";
         const left = d.createElement("div");
-        left.className = "left hole";
-        const right = d.createElement("right");
-        right.className = "right hole";
+        left.className = "l hole";
+        const right = d.createElement("div");
+        right.className = "r hole";
         const num = d.createElement("div");
         num.className = "number";
 
         const shifts = d.createElement("div");
         shifts.className = "shifts";
-       
+
         db.appendChild(label);
         label.appendChild(tab);
         tab.appendChild(left);
         tab.appendChild(right);
         tab.appendChild(num);
         label.appendChild(weekday);
-        db.appendChild(shifts);
+        db.appendChild(shifts).scrollTop = 0;;
     }
 }
 
@@ -96,23 +95,60 @@ function newShift(week, day, name, pos, time) {
     color(shift);
     const box = d.getElementsByClassName('shifts')[day];
     box.appendChild(shift);
+    shift.classList.add('week'+week);
 }
 
-async function loadData() {
+async function loadData(week) {
     const response = await fetch("data/shifts.csv", {cache: "no-store"});
     const data = await response.text();
-    const parsed = parse(data);
-    
+    const csv = await import("./../libraries/csv/index.js");
+    const parsed = csv.parse(data);
     for (var item of parsed) {
-        newShift(item[0], item[1]-1, item[2], item[3], item[4]);
+        if (item[0] == week) {
+            newShift(item[0], item[1], item[2], item[3], item[4]);
+        }
+    }
+}
+
+function clearData() {
+    for (var day of document.getElementsByClassName('shifts')) {
+        day.innerHTML = '';
+    }
+}
+
+function cover() {
+    for (var day of document.getElementsByClassName('day-box')) {
+        var cover = day.children[1].cloneNode(true);
+        day.appendChild(cover);
+        cover.style.flex = "0 0 800px";
+        cover.classList = 'cover';
+    }
+}
+
+async function nxt() {
+    currentWeek++;
+    cover();
+    clearData();
+    await loadData(currentWeek);
+    for (var day of document.getElementsByClassName('day-box')) {
+        day.removeChild(day.children[2]);
+    }
+}
+
+async function prv() {
+    currentWeek--;
+    cover();
+    clearData();
+    await loadData(currentWeek);
+    for (var day of document.getElementsByClassName('day-box')) {
+        day.removeChild(day.children[2]);
     }
 }
 
 function load() {
     daybox();
     days();
-    loadData();
+    loadData(currentWeek);
 }
 
 window.onload = load();
-
