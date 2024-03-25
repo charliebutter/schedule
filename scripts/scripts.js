@@ -108,7 +108,7 @@ async function loadData() {
 }
 
 function load() {
-    import("./libraries/csv/index.js")
+    import("../libraries/csv/index.js")
     console.log("hello");
     console.log(window.location.pathname);
     console.log(getDirectory("./"));
