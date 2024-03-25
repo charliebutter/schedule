@@ -1,3 +1,4 @@
+import {parse} from "/libraries/csv/index.js";
 
 function days() {
     const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -100,10 +101,8 @@ function newShift(week, day, name, pos, time) {
 async function loadData() {
     const response = await fetch("data/shifts.csv", {cache: "no-store"});
     const data = await response.text();
-    import("../libraries/csv/index.js")
-        .then((module) => {
-            const parsed = module.parse(data);
-      });
+    const parsed = parse(data);
+    
     for (var item of parsed) {
         newShift(item[0], item[1]-1, item[2], item[3], item[4]);
     }
