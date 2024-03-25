@@ -109,6 +109,7 @@ async function loadData() {
 }
 
 function load() {
+    console.log(window.location.pathname);
     daybox();
     days();
     loadData();
