@@ -109,11 +109,6 @@ async function loadData() {
 
 function load() {
     import("../libraries/csv/index.js")
-    console.log("hello");
-    console.log(window.location.pathname);
-    console.log(getDirectory("./"));
-    console.log(getDirectory("../"));
-    console.log(getDirectory(path));
     daybox();
     days();
     loadData();
