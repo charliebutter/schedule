@@ -1,18 +1,27 @@
-var currentWeek = 2;
+"use strict";
+
 var sleepSetTimeout_ctrl;
+const currentDate = new Date();
+var currentPage = currentDate;
+const twoDig = new Intl.NumberFormat('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+const mmdd = new Intl.DateTimeFormat('default', { month: 'short', day: 'numeric'});
 
 function sleep(ms) {
     clearInterval(sleepSetTimeout_ctrl);
     return new Promise(resolve => sleepSetTimeout_ctrl = setTimeout(resolve, ms));
 }
 
-function days() {
-    const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+function setUpDate(date) {
+    const start = mmdd.format(dateFns.startOfWeek(date, { weekStartsOn: 1 }));
+    const end = mmdd.format(dateFns.endOfWeek(date, { weekStartsOn: 1 }));
+    document.getElementById("date").innerHTML = `${start} - ${end}`;
+    const week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     const nodes = document.getElementsByClassName('day-box');
     for (var i = 0; i < nodes.length; i++) {
         const node = nodes[i];
         node.getElementsByClassName("weekday").item(0).innerHTML = week[i];
-        node.getElementsByClassName("number").item(0).innerHTML = (i + 1).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        const start = dateFns.startOfWeek(date, { weekStartsOn: 1 })
+        node.getElementsByClassName("number").item(0).innerHTML = dateFns.addDays(start, i).getDate();
     }
 }
 
@@ -79,7 +88,7 @@ function daybox() {
     }
 }
 
-function newShift(week, day, name, pos, time) {
+function newShift(day, name, pos, time) {
     const d = document;
 
     const shift = d.createElement("div");
@@ -110,55 +119,110 @@ function newShift(week, day, name, pos, time) {
 
     const box = d.getElementsByClassName('shifts')[day];
     box.appendChild(shift);
-    shift.classList.add('week'+week, 'animate__animated', 'animate__zoomIn');
+    shift.classList.add('animate__animated', 'animate__zoomIn');
 
     return shift;
 }
 
-async function loadData(week) {
+async function loadData() {
     for (var day of document.getElementsByClassName('shifts')) {
         day.innerHTML = '';
     }
     const response = await fetch("data/shifts.csv", {cache: "no-store"});
     const data = await response.text();
-    const csv = await import("./../libraries/csv/index.js");
-    const parsed = csv.parse(data);
+    const parsed = Papa.parse(data)['data'];
     for (var item of parsed) {
-        if (item[0] == week) {
-            newShift(item[0], item[1], item[2], item[3], item[4]);
+
+        var itemDate = new Date(currentDate.getFullYear(), item[0]-1, item[1]);
+        if (dateFns.isSameWeek(itemDate, currentPage, { weekStartsOn: 1 })) {
+            newShift(dateFns.getISODay(itemDate)-1, item[2], item[3], item[4]);
         }
     }
     const covers = document.getElementsByClassName('cover');
     for (var cover of covers) {
         cover.classList.add('slide');
     }
+    orderShifts();
 }
 
-async function clearData() {
+function clearData() {
     const shifts = document.getElementsByClassName('shift');
     for (var shift of shifts) {
         shift.classList.add('animate__zoomOut');
     }
 }
 
+function formatTime(timeRange) {
+    var start = timeRange.split('-')[0];
+    var end = timeRange.split('-')[1];
+    var sMin = "00";
+    if (start.split(':')[1] != undefined) {
+        var sMin = start.split(':')[1].substring(0,2);
+    }
+    var sHour = parseInt(start.split(/[AP:]+/)[0]);
+    var sHour12 = sHour;
+    if ((start.slice(-1) == 'P' && sHour < 12) || (start.slice(-1) == 'A' && sHour == 12)) {
+        sHour += 12;
+        sHour %= 24;
+    }
+    sHour = twoDig.format(sHour);
+
+    var eMin = "00";
+    if (end.split(':')[1] != undefined) {
+        var eMin = end.split(':')[1].substring(0,2);
+    }
+    var eHour = parseInt(end.split(/[AP:]+/)[0]);
+    var eHour12 = eHour;
+    if ((end.slice(-1) == 'P' && eHour < 12) || (end.slice(-1) == 'A' && eHour == 12)) {
+        eHour += 12;
+        eHour %= 24;
+    }
+    eHour = twoDig.format(eHour);
+
+    var overnight = '01';
+    if (Date.parse(`1970T${sHour}:${sMin}`) > Date.parse(`1970T${eHour}:${eMin}`)) {
+        overnight = '02';
+    }
+
+    return [sHour, sMin, eHour, eMin, `${sHour12}:${sMin}${start.slice(-1)}M -- ${eHour12}:${eMin}${end.slice(-1)}M`, overnight]; // start hour (HH), start min (mm), end hour (HH), end min (mm), prettified string, overnight?
+}
+
+function orderShifts() {
+    const shifts = document.getElementsByClassName('shift');
+    for (var shift of shifts) {
+        var time = shift.children[0].children[2].innerHTML;
+        var formatted = formatTime(time);
+        var s = Date.parse(`1970-01-${formatted[5]}T${formatted[0]}:${formatted[1]}`)/100;
+        var e = Date.parse(`1970-01-${formatted[5]}T${formatted[2]}:${formatted[3]}`)/10000;
+        shift.style.order = s+e;
+        shift.children[0].children[2].innerHTML = formatted[4];
+    }
+}
+
 async function nxt() {
-    currentWeek++;
+    currentPage = dateFns.addWeeks(currentPage, 1);
+    setUpDate(currentPage);
     clearData();
     await sleep(200);
-    loadData(currentWeek);
+    loadData(currentPage);
 }
 
 async function prv() {
-    currentWeek--;
+    currentPage = dateFns.subWeeks(currentPage, 1);
+    setUpDate(currentPage);
     clearData();
     await sleep(200);
-    loadData(currentWeek);
+    loadData(currentPage);
 }
 
 function load() {
+
+    if (currentDate > new Date(2024, 10, 30)) {
+        alert("IMPORTANT!!!\n\ntl;dr: this site will probably break around new years.\n\nhey! if you are seeing this, it must be decemeber already! time really does go by fast, doesn't it. anyway, it's march right now. coding a calendar is always a little scary due to all the weird quirks of the calendar system, and i'm pretty lazy too, so trying to fix every bug in this silly side project so that it works next year isn't at the top of my priorities. maybe i'll fix it if you give me some candy. but anyway. i hope you had a good year, and here's to many more. \n\ncheers,\ncharlie b.");}
+
     daybox();
-    days();
-    loadData(currentWeek);
+    setUpDate(currentDate);
+    loadData(currentPage);
 }
 
 window.onload = load();
