@@ -1,10 +1,4 @@
 var currentWeek = 2;
-var sleepSetTimeout_ctrl;
-
-function sleep(ms) {
-    clearInterval(sleepSetTimeout_ctrl);
-    return new Promise(resolve => sleepSetTimeout_ctrl = setTimeout(resolve, ms));
-}
 
 function days() {
     const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -18,27 +12,22 @@ function days() {
 
 function color(node) {
     node.style.borderStyle = "solid";
-    var color;
     switch (node.getElementsByClassName("sub").item(0).innerHTML) {
     case "Ropes Course":
-        color = "#2980b9";
+        node.style.borderColor = "#2980b9";
         break;
     case "Laser Tag":
-        color = "#f1c40f";
+        node.style.borderColor = "#f1c40f";
         break;
     case "Go-Karts":
-        color = "#e74c3c";
+        node.style.borderColor = "#e74c3c";
         break;
     case "Shift Lead":
-        color = "#8e44ad";
+        node.style.borderColor = "#8e44ad";
         break;
     default:
         console.log(node.getElementsByClassName("name").item(0).innerHTML);
-        color = "var(--dark)";
-        break;
     }
-    node.children[1].style.backgroundColor = color;
-    node.style.borderColor = color;
     node.style.borderLeftWidth = "20px";
     node.style.borderBottomWidth = "0px";
     node.style.borderRightWidth = "0px";
@@ -102,23 +91,14 @@ function newShift(week, day, name, pos, time) {
     sub2.appendChild(d.createTextNode(time));
     details.appendChild(sub2);
     
-    const cover = document.createElement("div");
-    cover.className = "cover";
     shift.appendChild(details);
-    shift.appendChild(cover);
     color(shift);
-
     const box = d.getElementsByClassName('shifts')[day];
     box.appendChild(shift);
-    shift.classList.add('week'+week, 'animate__animated', 'animate__zoomIn');
-
-    return shift;
+    shift.classList.add('week'+week);
 }
 
 async function loadData(week) {
-    for (var day of document.getElementsByClassName('shifts')) {
-        day.innerHTML = '';
-    }
     const response = await fetch("data/shifts.csv", {cache: "no-store"});
     const data = await response.text();
     const csv = await import("./../libraries/csv/index.js");
@@ -128,31 +108,41 @@ async function loadData(week) {
             newShift(item[0], item[1], item[2], item[3], item[4]);
         }
     }
-    const covers = document.getElementsByClassName('cover');
-    for (var cover of covers) {
-        cover.classList.add('slide');
+}
+
+function clearData() {
+    for (var day of document.getElementsByClassName('shifts')) {
+        day.innerHTML = '';
     }
 }
 
-async function clearData() {
-    const shifts = document.getElementsByClassName('shift');
-    for (var shift of shifts) {
-        shift.classList.add('animate__zoomOut');
+function cover() {
+    for (var day of document.getElementsByClassName('day-box')) {
+        var cover = day.children[1].cloneNode(true);
+        day.appendChild(cover);
+        cover.style.flex = "0 0 800px";
+        cover.classList = 'cover';
     }
 }
 
 async function nxt() {
     currentWeek++;
+    cover();
     clearData();
-    await sleep(200);
-    loadData(currentWeek);
+    await loadData(currentWeek);
+    for (var day of document.getElementsByClassName('day-box')) {
+        day.removeChild(day.children[2]);
+    }
 }
 
 async function prv() {
     currentWeek--;
+    cover();
     clearData();
-    await sleep(200);
-    loadData(currentWeek);
+    await loadData(currentWeek);
+    for (var day of document.getElementsByClassName('day-box')) {
+        day.removeChild(day.children[2]);
+    }
 }
 
 function load() {

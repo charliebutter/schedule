@@ -88,25 +88,20 @@ header {
 }
 
 .shift {
-    min-height: 110px;
+    min-height: 80px;
+    background-color: var(--bright);
     margin: 6%;
     border-radius: 15px;
     overflow: hidden;
     text-align: left;
+    padding: 0 15px;
     display: flex;
     align-items: center;
     border: none;
-    background-color: var(--bright);
-    position: relative;
-    --animate-duration: 400ms;
-}
-
-.shift:hover {
-    background-position: left;
 }
 
 .details {
-    padding: 10px 15px;
+    padding: 10px 0;
 }
 
 .sub {
@@ -202,28 +197,9 @@ header {
     background-color: var(--dark);
     width: 30%;
     border-radius: 18px;
-    border: 6px solid var(--light);
+    border: 8px solid var(--light);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 1%;
-}
-
-.cover {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-
-@keyframes slide {
-    100% {
-        right: 100%;
-    }
-}
-
-.slide {
-    animation: 0.55s 1s ease slide;
-    animation-fill-mode: forwards;
 }
