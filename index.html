@@ -21,15 +21,13 @@
     </header>
 
     <div class="month locked">
-        <!-- <div onclick="" class="small far gg-push-chevron-left-r"></div> -->
-        <div onclick="prv()" class="small arrow gg-arrow-left-r"></div>
+        <div onclick="switchPage('left')" class="small arrow gg-arrow-left-r"></div>
         <h1 id="date"></h1>
-        <div onclick="nxt()" class="small arrow gg-arrow-right-r"></div>
-        <!-- <div onclick="" class="small far gg-push-chevron-right-r"></div> -->
+        <div onclick="switchPage('right')" class="small arrow gg-arrow-right-r"></div>
     </div>
     
     <div class="box-container">
-        <div onclick="prv()" class="big arrow gg-arrow-left-r"></div>
+        <div onclick="switchPage('left')" class="big arrow gg-arrow-left-r"></div>
         <div class="day-box"></div>
         <div class="day-box"></div>
         <div class="day-box"></div>
@@ -37,7 +35,7 @@
         <div class="day-box"></div>
         <div class="day-box"></div>
         <div class="day-box"></div>
-        <div onclick="nxt()" class="big arrow gg-arrow-right-r"></div>
+        <div onclick="switchPage('right')" class="big arrow gg-arrow-right-r"></div>
     </div>
 
     <script src="scripts/scripts.js"></script>

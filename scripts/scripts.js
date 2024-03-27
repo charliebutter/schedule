@@ -5,6 +5,7 @@ const currentDate = new Date();
 var currentPage = currentDate;
 const twoDig = new Intl.NumberFormat('en-US', {minimumIntegerDigits: 2, useGrouping:false});
 const mmdd = new Intl.DateTimeFormat('default', { month: 'short', day: 'numeric'});
+var highlighted = '';
 
 function sleep(ms) {
     clearInterval(sleepSetTimeout_ctrl);
@@ -16,12 +17,13 @@ function setUpDate(date) {
     const end = mmdd.format(dateFns.endOfWeek(date, { weekStartsOn: 1 }));
     document.getElementById("date").innerHTML = `${start} - ${end}`;
     const week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    const nodes = document.getElementsByClassName('day-box');
-    for (var i = 0; i < nodes.length; i++) {
-        const node = nodes[i];
-        node.getElementsByClassName("weekday").item(0).innerHTML = week[i];
-        const start = dateFns.startOfWeek(date, { weekStartsOn: 1 })
-        node.getElementsByClassName("number").item(0).innerHTML = dateFns.addDays(start, i).getDate();
+    const days = document.getElementsByClassName('day-box');
+    for (var i = 0; i < days.length; i++) {
+        const day = days[i];
+        day.getElementsByClassName("weekday")[0].innerHTML = week[i];
+        const start = dateFns.startOfWeek(date, { weekStartsOn: 1 });
+        var num = day.getElementsByClassName("number")[0];
+        num.innerHTML = dateFns.addDays(start, i).getDate();
     }
 }
 
@@ -93,6 +95,7 @@ function newShift(day, name, pos, time) {
 
     const shift = d.createElement("div");
     shift.className = "shift";
+
     const details = d.createElement("div");
     details.className = "details";
 
@@ -100,26 +103,28 @@ function newShift(day, name, pos, time) {
     head.className = "name";
     head.appendChild(d.createTextNode(name));
     details.appendChild(head);
-
     const sub1 = d.createElement("p");
     sub1.className = "sub";
     sub1.appendChild(d.createTextNode(pos));
     details.appendChild(sub1);
-
     const sub2 = d.createElement("p");
     sub2.className = "sub";
     sub2.appendChild(d.createTextNode(time));
     details.appendChild(sub2);
-    
+
     const cover = document.createElement("div");
-    cover.className = "cover";
-    shift.appendChild(details);
+    cover.className = "cover"; 
+
+    shift.appendChild(details);   
     shift.appendChild(cover);
+
     color(shift);
 
-    const box = d.getElementsByClassName('shifts')[day];
-    box.appendChild(shift);
+    const shifts = d.getElementsByClassName('shifts')[day];
+    shifts.appendChild(shift);
+
     shift.classList.add('animate__animated', 'animate__zoomIn');
+    shift.setAttribute('onclick', "highlight(false, this.getElementsByClassName('name')[0].innerHTML)");
 
     return shift;
 }
@@ -132,10 +137,12 @@ async function loadData() {
     const data = await response.text();
     const parsed = Papa.parse(data)['data'];
     for (var item of parsed) {
-
         var itemDate = new Date(currentDate.getFullYear(), item[0]-1, item[1]);
+        var itemDateNextYear = dateFns.addYears(itemDate, 1);
         if (dateFns.isSameWeek(itemDate, currentPage, { weekStartsOn: 1 })) {
             newShift(dateFns.getISODay(itemDate)-1, item[2], item[3], item[4]);
+        } else if (dateFns.isSameWeek(itemDateNextYear, currentPage, { weekStartsOn: 1 })) {
+            newShift(dateFns.getISODay(itemDateNextYear)-1, item[2], item[3], item[4]);
         }
     }
     const covers = document.getElementsByClassName('cover');
@@ -199,26 +206,27 @@ function orderShifts() {
     }
 }
 
-async function nxt() {
-    currentPage = dateFns.addWeeks(currentPage, 1);
+async function switchPage(direction) {
+    currentPage = direction == 'right' ? dateFns.addWeeks(currentPage, 1) : dateFns.subWeeks(currentPage, 1);
     setUpDate(currentPage);
     clearData();
     await sleep(200);
-    loadData(currentPage);
+    await loadData(currentPage);
+    highlight(true, highlighted);
 }
 
-async function prv() {
-    currentPage = dateFns.subWeeks(currentPage, 1);
-    setUpDate(currentPage);
-    clearData();
-    await sleep(200);
-    loadData(currentPage);
+function highlight(remember, user) {
+    var shifts = document.getElementsByClassName("shift");
+    for (var shift of shifts) {
+        shift.classList.remove("dark");
+        if ((remember != (highlighted == '')) && shift.getElementsByClassName("name")[0].innerHTML != user) {
+            shift.classList.add("dark");
+        }
+    }
+    highlighted = ((remember != (highlighted == ''))) ? user : '';
 }
 
 function load() {
-
-    if (currentDate > new Date(2024, 10, 30)) {
-        alert("IMPORTANT!!!\n\ntl;dr: this site will probably break around new years.\n\nhey! if you are seeing this, it must be decemeber already! time really does go by fast, doesn't it. anyway, it's march right now. coding a calendar is always a little scary due to all the weird quirks of the calendar system, and i'm pretty lazy too, so trying to fix every bug in this silly side project so that it works next year isn't at the top of my priorities. maybe i'll fix it if you give me some candy. but anyway. i hope you had a good year, and here's to many more. \n\ncheers,\ncharlie b.");}
 
     daybox();
     setUpDate(currentDate);

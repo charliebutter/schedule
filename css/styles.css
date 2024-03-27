@@ -15,10 +15,11 @@
 }
 
 :root {
-  --dark: #092635;
-  --mid: #1B4242;
-  --light: #5C8374;
-  --bright: #9EC8B9;
+    --dark: #092635;
+    --mid: #1B4242;
+    --light: #5C8374;
+    --bright: #9EC8B9;
+    --loading-time: 0.55s; 
 }
 
 .locked {
@@ -80,6 +81,7 @@ header {
     display: flex;
     justify-content: center;
     gap: 10px;
+    position: relative;
 }
 
 .shifts {
@@ -102,10 +104,12 @@ header {
     background-color: var(--bright);
     position: relative;
     --animate-duration: 400ms;
+    cursor: pointer;
+    transition: filter .08s linear;
 }
 
 .shift:hover {
-    background-position: left;
+    filter: brightness(85%);
 }
 
 .details {
@@ -227,6 +231,10 @@ header {
 }
 
 .slide {
-    animation: .55s .55s ease slide;
+    animation: .55s var(--loading-time) ease slide;
     animation-fill-mode: forwards;
+}
+
+.dark {
+    filter: brightness(23%) !important;
 }
