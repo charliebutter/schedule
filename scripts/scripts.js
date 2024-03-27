@@ -1,7 +1,7 @@
 "use strict";
 
 var sleepSetTimeout_ctrl;
-const currentDate = new Date();
+const currentDate = new Date(2024, 3, 8);
 var currentPage = currentDate;
 const twoDig = new Intl.NumberFormat('en-US', {minimumIntegerDigits: 2, useGrouping:false});
 const mmdd = new Intl.DateTimeFormat('default', { month: 'short', day: 'numeric'});
@@ -124,7 +124,7 @@ function newShift(day, name, pos, time) {
     shifts.appendChild(shift);
 
     shift.classList.add('animate__animated', 'animate__zoomIn');
-    shift.setAttribute('onclick', "highlight(false, this.getElementsByClassName('name')[0].innerHTML)");
+    shift.setAttribute('onclick', "select(this)");
 
     return shift;
 }
@@ -222,8 +222,17 @@ function highlight(remember, user) {
         if ((remember != (highlighted == '')) && shift.getElementsByClassName("name")[0].innerHTML != user) {
             shift.classList.add("dark");
         }
+        if (remember || (highlighted != '')) {
+            shift.classList.remove("selected");
+        }
     }
     highlighted = ((remember != (highlighted == ''))) ? user : '';
+}
+
+function select(shift) {
+    const result = shift.classList.toggle('selected');
+    highlight(false, shift.getElementsByClassName('name')[0].innerHTML);
+    console.log(result);
 }
 
 function load() {

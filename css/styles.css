@@ -19,7 +19,7 @@
     --mid: #1B4242;
     --light: #5C8374;
     --bright: #9EC8B9;
-    --loading-time: 0.55s; 
+    --loading-time: 0.5s; 
 }
 
 .locked {
@@ -93,19 +93,19 @@ header {
 }
 
 .shift {
-    min-height: 110px;
+    --animate-duration: 400ms;
+    min-height: 100px;
     margin: 3% 6% 3%;
     border-radius: 15px;
-    overflow: hidden;
+    overflow: auto;
     text-align: left;
-    display: flex;
-    align-items: center;
-    border: none;
     background-color: var(--bright);
     position: relative;
-    --animate-duration: 400ms;
     cursor: pointer;
-    transition: filter .08s linear;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: filter .08s linear, min-height .4s;
 }
 
 .shift:hover {
@@ -113,7 +113,10 @@ header {
 }
 
 .details {
-    padding: 10px 15px;
+    overflow-wrap: break-word;
+    height: 100%;
+    padding: 5px 15px;
+/*    border: 2px solid red;*/
 }
 
 .sub {
@@ -237,4 +240,9 @@ header {
 
 .dark {
     filter: brightness(23%) !important;
+}
+
+.selected {
+    min-height: 200px;
+    filter: brightness(110%) !important;
 }
